@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Snake</string>
+    <string name="left">left</string>
+    <string name="up">up</string>
+    <string name="down">down</string>
+    <string name="right">right</string>
+    <string name="score">Score:</string>
+    <string name="high_score">High score:</string>
+    <string name="reset">reset</string>
+</resources>
