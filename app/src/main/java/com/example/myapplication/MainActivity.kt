@@ -24,12 +24,6 @@ class MainActivity : AppCompatActivity(), OnClickListener {
         highScoreText = findViewById<TextView>(R.id.high_score_text)
         gameView?.setTexts(scoreText, highScoreText)
         gameView?.onGameOver = this::showDialog
-
-        if (savedInstanceState != null) {
-            gameView?.controller?.score = savedInstanceState.getInt("score")
-            gameView?.controller?.restoreApple(savedInstanceState.getIntegerArrayList("apple"))
-            gameView?.controller?.restoreSnake(savedInstanceState.getIntegerArrayList("snake_positions"))
-        }
     }
 
     override fun onClick(p0: View?) {
@@ -61,14 +55,6 @@ class MainActivity : AppCompatActivity(), OnClickListener {
     override fun onResume() {
         super.onResume()
         gameView?.resume()
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        // Save the user's current game state.
-        gameView?.saveState(outState)
-
-        // Always call the superclass so it can save the view hierarchy state.
-        super.onSaveInstanceState(outState)
     }
 
     private fun showDialog() {

@@ -7,6 +7,7 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.os.Parcelable
 import android.util.AttributeSet
 import android.view.View
 import android.widget.TextView
@@ -50,8 +51,9 @@ class GameView(private val context: Context?, attrs: AttributeSet?) : View(conte
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         super.onLayout(changed, left, top, right, bottom)
-        squareSize= min((this.right - this.left)/20, (this.bottom - this.top)/20)
+        squareSize= min(this.width/20, this.height/20)
         controller?.updateSize(squareSize)
+
     }
 
     @SuppressLint("DrawAllocation")
@@ -61,6 +63,22 @@ class GameView(private val context: Context?, attrs: AttributeSet?) : View(conte
         controller?.drawAll(canvas)
         scoreText?.text = controller.score.toString()
         highScoreText?.text = controller.highScore.toString()
+    }
+
+    override fun onSaveInstanceState(): Parcelable? {
+        val superState = super.onSaveInstanceState()
+        controller.saveAll(superState as Bundle)
+        return superState
+    }
+
+    override fun onRestoreInstanceState(state: Parcelable?) {
+        super.onRestoreInstanceState(state)
+        if (state == null) return
+        val bundle = state as Bundle
+        controller.score = bundle.getInt("score")
+        controller.restoreApple(bundle.getIntegerArrayList("apple"))
+        controller.restoreSnake(bundle.getIntegerArrayList("snake_positions"))
+
     }
 
     private fun drawField(canvas: Canvas) {
@@ -109,7 +127,7 @@ class GameView(private val context: Context?, attrs: AttributeSet?) : View(conte
 
 
     fun saveState(outState: Bundle) {
-        controller.saveAll(outState)
+
     }
 
 }
