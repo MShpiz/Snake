@@ -80,11 +80,18 @@ class SnakeController() {
 
     fun makeSnake(pos: ArrayList<Int>?) {
         snake.clear()
-        for (i in 0..<pos!!.size step 2) {
+        if (pos == null) {
             snake.add(SnakePiece())
-            snake.last().x = pos[i]
-            snake.last().y = pos[i + 1]
+            snake.last().x = 0
+            snake.last().y = 0
+        } else {
+            for (i in 0..<pos.size step 2) {
+                snake.add(SnakePiece())
+                snake.last().x = pos[i]
+                snake.last().y = pos[i + 1]
+            }
         }
+
     }
 
     fun saveSnake():ArrayList<Int> {

@@ -67,15 +67,17 @@ class GameView(private val context: Context?, attrs: AttributeSet?) : View(conte
 
     override fun onSaveInstanceState(): Parcelable? {
         val superState = super.onSaveInstanceState()
-        controller.saveAll(superState as Bundle)
-        return superState
+        val bundle = Bundle()
+        bundle.putParcelable("superstate", superState)
+        controller.saveAll(bundle)
+        return bundle
     }
 
     override fun onRestoreInstanceState(state: Parcelable?) {
-        super.onRestoreInstanceState(state)
         if (state == null) return
         val bundle = state as Bundle
-        controller.score = bundle.getInt("score")
+        super.onRestoreInstanceState(bundle.getParcelable("superstate"))
+        controller.score = bundle.getInt("score", 0)
         controller.restoreApple(bundle.getIntegerArrayList("apple"))
         controller.restoreSnake(bundle.getIntegerArrayList("snake_positions"))
 
@@ -123,11 +125,6 @@ class GameView(private val context: Context?, attrs: AttributeSet?) : View(conte
 
     fun resume() {
         timer.start()
-    }
-
-
-    fun saveState(outState: Bundle) {
-
     }
 
 }
