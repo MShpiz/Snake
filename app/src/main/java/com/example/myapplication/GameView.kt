@@ -16,10 +16,16 @@ import java.lang.Integer.min
 class GameView(private val context: Context?, attrs: AttributeSet?) : View(context, attrs) {
     private var scoreText: TextView? = null
     private var highScoreText: TextView? = null
+
     private var squareSize: Int = 0
     private var fieldOffsetX: Int = 0
     private var fieldOffsetY: Int = 0
+
     private val SUPER_STATE = "superstate"
+
+    private val sharedPrefFile = "snake_scores"
+    private val highScoreKey = "high_score"
+
     var controller: GameController = GameController(20)
     var onGameOver: (() -> Unit)? = null
 
@@ -39,16 +45,16 @@ class GameView(private val context: Context?, attrs: AttributeSet?) : View(conte
     }
 
     private fun setScore() {
-        val sharedPreferences: SharedPreferences = context!!.getSharedPreferences("snake_scores", Context.MODE_PRIVATE)
-        val recordedScore = sharedPreferences.getInt("high_score", 0)
+        val sharedPreferences: SharedPreferences = context!!.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
+        val recordedScore = sharedPreferences.getInt(highScoreKey, 0)
         if (recordedScore < controller.highScore) {
-            sharedPreferences.edit().putInt("high_score", controller.highScore).apply()
+            sharedPreferences.edit().putInt(highScoreKey, controller.highScore).apply()
         }
     }
 
     init {
-        val sharedPreferences: SharedPreferences = context!!.getSharedPreferences("snake_scores", Context.MODE_PRIVATE)
-        controller.highScore = sharedPreferences.getInt("high_score", 0)
+        val sharedPreferences: SharedPreferences = context!!.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
+        controller.highScore = sharedPreferences.getInt(highScoreKey, 0)
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
@@ -79,9 +85,7 @@ class GameView(private val context: Context?, attrs: AttributeSet?) : View(conte
         if (state == null) return
         val bundle = state as Bundle
         super.onRestoreInstanceState(bundle.getParcelable(SUPER_STATE))
-        controller.score = bundle.getInt("score", 0)
-        controller.restoreApple(bundle.getIntegerArrayList("apple"))
-        controller.restoreSnake(bundle.getIntegerArrayList("snake_positions"))
+        controller.restoreAll(bundle)
 
     }
 

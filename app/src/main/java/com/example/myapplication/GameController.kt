@@ -7,6 +7,11 @@ class GameController(private val fieldSize: Int) {
 
     private val snakeController: SnakeController = SnakeController()
     private val apple = Apple()
+
+    private val scoreKey = "score"
+    private val snakePosKey = "snake_positions"
+    private val applePosKey = "apple"
+
     var score = 0
     var highScore = 0
 
@@ -60,12 +65,12 @@ class GameController(private val fieldSize: Int) {
         changeDirection(Direction.stop)
     }
 
-    fun restoreSnake(integerArrayList: ArrayList<Int>?) {
+    private fun restoreSnake(integerArrayList: ArrayList<Int>?) {
         snakeController.reset()
         snakeController.makeSnake(integerArrayList)
     }
 
-    fun restoreApple(integerArrayList: ArrayList<Int>?) {
+    private fun restoreApple(integerArrayList: ArrayList<Int>?) {
         apple.x = integerArrayList?.get(0) ?: 0
         apple.y = integerArrayList?.get(1) ?: 0
     }
@@ -79,9 +84,15 @@ class GameController(private val fieldSize: Int) {
 
     fun saveAll(savedInstanceState: Bundle){
         savedInstanceState.run {
-            savedInstanceState.putInt("score", score)
-            savedInstanceState.putIntegerArrayList("snake_positions", snakeController.saveSnake())
-            savedInstanceState.putIntegerArrayList("apple", saveApple())
+            savedInstanceState.putInt(scoreKey, score)
+            savedInstanceState.putIntegerArrayList(snakePosKey, snakeController.saveSnake())
+            savedInstanceState.putIntegerArrayList(applePosKey, saveApple())
         }
+    }
+
+    fun restoreAll(bundle: Bundle) {
+        score = bundle.getInt(scoreKey, 0)
+        restoreApple(bundle.getIntegerArrayList(applePosKey))
+        restoreSnake(bundle.getIntegerArrayList(snakePosKey))
     }
 }
