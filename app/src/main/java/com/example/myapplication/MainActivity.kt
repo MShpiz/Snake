@@ -41,6 +41,9 @@ class MainActivity : AppCompatActivity(), OnClickListener {
             R.id.btn_down -> {
                 gameView?.changeDirection(Direction.down)
             }
+            R.id.pause_btn -> {
+                gameView?.changeDirection(Direction.stop)
+            }
             R.id.reset_btn -> {
                 gameView?.reset()
             }

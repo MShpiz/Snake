@@ -115,7 +115,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:onClick="onClick"
-                android:text="@string/reset" />
+                android:text="@string/reset"
+                android:layout_gravity="bottom"/>
+
+            <Button
+                android:id="@+id/pause_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="onClick"
+                android:text="@string/pause" />
 
         </LinearLayout>
 
