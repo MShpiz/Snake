@@ -42,9 +42,9 @@ class SnakeController() {
         return checkSelfCollision()
     }
 
-    fun drawSnake(canvas: Canvas) {
+    fun drawSnake(canvas: Canvas, squareSize: Int, fieldOffsetX: Int, fieldOffsetY: Int) {
         for (elem in snake) {
-            elem.draw(canvas)
+            elem.draw(canvas, squareSize, fieldOffsetX, fieldOffsetY)
         }
     }
 
@@ -57,41 +57,29 @@ class SnakeController() {
         return snake[0].compareTo(apple) == 0
     }
 
-    fun updateSize(squareSize: Int) {
-        for (elem in snake) {
-            elem.size = squareSize
-        }
-    }
-
     fun elongate() {
         snake.add(SnakePiece())
         snake.last().x = snake[snake.size-2].x
         snake.last().y = snake[snake.size-2].y
-        snake.last().size = snake[snake.size-2].size
     }
 
     fun reset() {
-        val size = snake[0].size
         snake.clear()
         dir = Direction.stop
         snake.add(SnakePiece())
-        snake[0].size = size
     }
 
     fun makeSnake(pos: ArrayList<Int>?) {
-        snake.clear()
         if (pos == null) {
-            snake.add(SnakePiece())
-            snake.last().x = 0
-            snake.last().y = 0
+            reset()
         } else {
+            snake.clear()
             for (i in 0..<pos.size step 2) {
                 snake.add(SnakePiece())
                 snake.last().x = pos[i]
                 snake.last().y = pos[i + 1]
             }
         }
-
     }
 
     fun saveSnake():ArrayList<Int> {

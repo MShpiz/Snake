@@ -17,14 +17,16 @@ class GameView(private val context: Context?, attrs: AttributeSet?) : View(conte
     private var scoreText: TextView? = null
     private var highScoreText: TextView? = null
     private var squareSize: Int = 0
-    var controller: GameController = GameController(20, context)
+    private var fieldOffsetX: Int = 0
+    private var fieldOffsetY: Int = 0
+    private val SUPER_STATE = "superstate"
+    var controller: GameController = GameController(20)
     var onGameOver: (() -> Unit)? = null
-
 
 
     var timer = object : CountDownTimer(Long.MAX_VALUE, 500) {
         override fun onTick(p0: Long) {
-            if (!controller!!.gameStep()) {
+            if (!controller.gameStep()) {
                 this.cancel()
                 setScore()
                 onGameOver?.invoke()
@@ -52,23 +54,23 @@ class GameView(private val context: Context?, attrs: AttributeSet?) : View(conte
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         super.onLayout(changed, left, top, right, bottom)
         squareSize= min(this.width/20, this.height/20)
-        controller?.updateSize(squareSize)
-
+        fieldOffsetX = (this.width - squareSize*20)/2
+        fieldOffsetY = (this.height - squareSize*20)/2
     }
 
     @SuppressLint("DrawAllocation")
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         drawField(canvas)
-        controller?.drawAll(canvas)
+        controller.drawAll(canvas, squareSize, fieldOffsetX, fieldOffsetY)
         scoreText?.text = controller.score.toString()
         highScoreText?.text = controller.highScore.toString()
     }
 
-    override fun onSaveInstanceState(): Parcelable? {
+    override fun onSaveInstanceState(): Parcelable {
         val superState = super.onSaveInstanceState()
         val bundle = Bundle()
-        bundle.putParcelable("superstate", superState)
+        bundle.putParcelable(SUPER_STATE, superState)
         controller.saveAll(bundle)
         return bundle
     }
@@ -76,7 +78,7 @@ class GameView(private val context: Context?, attrs: AttributeSet?) : View(conte
     override fun onRestoreInstanceState(state: Parcelable?) {
         if (state == null) return
         val bundle = state as Bundle
-        super.onRestoreInstanceState(bundle.getParcelable("superstate"))
+        super.onRestoreInstanceState(bundle.getParcelable(SUPER_STATE))
         controller.score = bundle.getInt("score", 0)
         controller.restoreApple(bundle.getIntegerArrayList("apple"))
         controller.restoreSnake(bundle.getIntegerArrayList("snake_positions"))
@@ -86,15 +88,17 @@ class GameView(private val context: Context?, attrs: AttributeSet?) : View(conte
     private fun drawField(canvas: Canvas) {
         val lines = mutableListOf<Float>()
         for (i in 0..20) {
-                lines.add(i*squareSize.toFloat())
-                lines.add(0f)
-                lines.add(i*squareSize.toFloat())
-                lines.add((20)*squareSize.toFloat())
+            // horizontal line
+            lines.add(i*squareSize.toFloat() + fieldOffsetX) // x start
+            lines.add(0f + fieldOffsetY) // y start
+            lines.add(i*squareSize.toFloat() + fieldOffsetX) // x end
+            lines.add((20)*squareSize.toFloat() + fieldOffsetY) // y end
 
-                lines.add(0f)
-                lines.add(i*squareSize.toFloat())
-                lines.add((20)*squareSize.toFloat())
-                lines.add(i*squareSize.toFloat())
+            // vertical line
+            lines.add(0f + fieldOffsetX) // x start
+            lines.add(i*squareSize.toFloat() + fieldOffsetY) // y start
+            lines.add((20)*squareSize.toFloat() + fieldOffsetX) // x end
+            lines.add(i*squareSize.toFloat() + fieldOffsetY) // y end
 
         }
 

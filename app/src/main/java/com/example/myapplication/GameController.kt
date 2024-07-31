@@ -1,11 +1,9 @@
 package com.example.myapplication
 
-import android.content.Context
 import android.graphics.Canvas
 import android.os.Bundle
 
-class GameController(val fieldSize: Int, context: Context?) {
-
+class GameController(private val fieldSize: Int) {
 
     private val snakeController: SnakeController = SnakeController()
     private val apple = Apple()
@@ -33,14 +31,9 @@ class GameController(val fieldSize: Int, context: Context?) {
         return false
     }
 
-    fun updateSize(squareSize: Int) {
-        snakeController.updateSize(squareSize)
-        apple.size = squareSize
-    }
-
-    fun drawAll(canvas: Canvas) {
-        apple.draw(canvas)
-        snakeController.drawSnake(canvas)
+    fun drawAll(canvas: Canvas, squareSize: Int, fieldOffsetX: Int, fieldOffsetY: Int) {
+        apple.draw(canvas, squareSize, fieldOffsetX, fieldOffsetY)
+        snakeController.drawSnake(canvas, squareSize, fieldOffsetX, fieldOffsetY)
     }
 
     fun gameStep(): Boolean {
