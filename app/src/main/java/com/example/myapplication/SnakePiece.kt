@@ -1,7 +1,7 @@
 package com.example.myapplication
 
-import android.graphics.Canvas
-import android.graphics.Paint
-
 class SnakePiece(): Square() {
+    init {
+        paint.setARGB(0xff, 52, 135, 37)
+    }
 }
